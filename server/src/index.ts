@@ -1,9 +1,11 @@
-import 'dotenv/config'
 import cors from 'cors'
 import express from 'express'
 import type { AzureChatOpenAI } from '@langchain/openai'
+import { loadEnvFiles } from './loadEnv.js'
 import { createAzureChat } from './llm/azureChat.js'
 import { registerWarSimulationRoute } from './routes/warSimulation.js'
+
+loadEnvFiles()
 
 const port = Number(process.env.PORT) || 3000
 
@@ -28,7 +30,7 @@ if (model) {
   app.post('/api/war-simulation', (_req, res) => {
     res.status(503).json({
       error:
-        'Server missing AZURE_OPENAI_API_KEY, AZURE_OPENAI_ENDPOINT, or AZURE_OPENAI_DEPLOYMENT_NAME. Copy server/.env.example to server/.env.',
+        'Azure not configured: set AZURE_OPENAI_API_KEY, AZURE_OPENAI_ENDPOINT, and AZURE_OPENAI_DEPLOYMENT_NAME in server/.env (or repo-root .env with VITE_AZURE_* equivalents). See server/.env.example and README.',
     })
   })
 }

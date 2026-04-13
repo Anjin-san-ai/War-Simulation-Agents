@@ -37,15 +37,20 @@ function parseJsonContent(content: unknown): unknown {
   return JSON.parse(JSON.stringify(content))
 }
 
+const JSON_FORMAT_OPTS = {
+  response_format: { type: 'json_object' as const },
+}
+
 async function invokeHatJson(
   model: AzureChatOpenAI,
   hat: HatKey,
   scenario: string,
 ): Promise<HatResult> {
   const system = hatSystemPrompt(hat)
-  const res = await model.invoke([new SystemMessage(system), new HumanMessage(scenario)], {
-    response_format: { type: 'json_object' },
-  })
+  const res = await model.invoke(
+    [new SystemMessage(system), new HumanMessage(scenario)],
+    JSON_FORMAT_OPTS,
+  )
   const raw = parseJsonContent(res.content)
   const parsed = HatResultSchema.safeParse(raw)
   if (!parsed.success) {
@@ -65,7 +70,7 @@ async function invokeFinalizeJson(
   const payload = JSON.stringify({ scenario, hats }, null, 0)
   const res = await model.invoke(
     [new SystemMessage(FINALIZE_SYSTEM), new HumanMessage(payload)],
-    { response_format: { type: 'json_object' } },
+    JSON_FORMAT_OPTS,
   )
   const raw = parseJsonContent(res.content) as Record<string, unknown>
   const risksRaw = raw.risks as Record<string, number> | undefined

@@ -32,9 +32,13 @@ npm run preview # preview production build
 
 ### War simulation (Node + LangGraph)
 
-Keys stay on the **server**. Copy [`server/.env.example`](server/.env.example) to `server/.env` and set `AZURE_OPENAI_API_KEY`, `AZURE_OPENAI_ENDPOINT`, `AZURE_OPENAI_DEPLOYMENT_NAME`, and `AZURE_OPENAI_API_VERSION`. See [`server/README.md`](server/README.md).
+Keys stay **off the browser**; the Node API reads them. The server loads **repo-root `.env` first**, then **`server/.env`** (overrides). Prefer `AZURE_OPENAI_API_KEY`, `AZURE_OPENAI_ENDPOINT`, `AZURE_OPENAI_DEPLOYMENT_NAME`, and `AZURE_OPENAI_API_VERSION` in either file — see [`server/.env.example`](server/.env.example).
 
-Without `server/.env`, `POST /api/war-simulation` returns 503 and the war panel shows an error when you run a simulation.
+If you only maintain **root** `.env` with **`VITE_AZURE_OPENAI_*`** variables (same values as for conflict enrichment below), the API server will use those as a fallback so you do not have to duplicate keys under different names.
+
+**Troubleshooting:** Open [`http://localhost:3000/health`](http://localhost:3000/health) while the API is running. If `"azure": false`, credentials are missing or misnamed — see [`server/README.md`](server/README.md) Troubleshooting. Restart the server after changing `.env`.
+
+If Azure is configured but `POST /api/war-simulation` still fails, check deployment name and API version in the Azure portal.
 
 Optional: set `VITE_WAR_API_URL` if the API is not on `http://localhost:3000` (otherwise the Vite proxy is enough in dev).
 

@@ -6,19 +6,41 @@ An interactive **OSINT-style command center**: a 3D Earth globe with layered int
 
 ```bash
 npm install
+cd server && npm install && cd ..
+```
+
+**Globe + UI only** (war simulation button will fail until the API is running):
+
+```bash
 npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173).
+**Globe + LangGraph war API** (recommended): run the Node server and Vite together:
+
+```bash
+npm run dev:all
+```
+
+Open [http://localhost:5173](http://localhost:5173) — Vite proxies `/api` to the API on port **3000**.
 
 ```bash
 npm run build   # production build
 npm run preview # preview production build
 ```
 
-## Configuration (Azure OpenAI)
+## Configuration
 
-War simulation and news geolocation use **Azure OpenAI** (e.g. GPT-4o). Copy `.env.example` to `.env` and set:
+### War simulation (Node + LangGraph)
+
+Keys stay on the **server**. Copy [`server/.env.example`](server/.env.example) to `server/.env` and set `AZURE_OPENAI_API_KEY`, `AZURE_OPENAI_ENDPOINT`, `AZURE_OPENAI_DEPLOYMENT_NAME`, and `AZURE_OPENAI_API_VERSION`. See [`server/README.md`](server/README.md).
+
+Without `server/.env`, `POST /api/war-simulation` returns 503 and the war panel shows an error when you run a simulation.
+
+Optional: set `VITE_WAR_API_URL` if the API is not on `http://localhost:3000` (otherwise the Vite proxy is enough in dev).
+
+### Conflict news enrichment (browser)
+
+GDELT article geolocation still calls Azure from the client when configured. Copy `.env.example` to `.env` in the project root and set:
 
 | Variable | Description |
 |----------|-------------|
@@ -27,7 +49,7 @@ War simulation and news geolocation use **Azure OpenAI** (e.g. GPT-4o). Copy `.e
 | `VITE_AZURE_OPENAI_DEPLOYMENT` | Deployment name (default `gpt-4o`) |
 | `VITE_AZURE_OPENAI_API_VERSION` | API version (default `2025-01-01-preview`) |
 
-Without valid keys, war simulation will error and conflict articles may fall back to placeholder coordinates only where the app provides them.
+Without valid keys, conflict articles may fall back to placeholder coordinates only where the app provides them.
 
 ---
 

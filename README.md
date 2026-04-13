@@ -105,6 +105,18 @@ Without valid keys, war simulation will error and conflict articles may fall bac
 
 This project is released under the [MIT License](LICENSE).
 
+## Push to GitHub
+
+Create an empty repository on GitHub (no README if you want a clean first push), then from this project directory:
+
+```bash
+git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO.git
+git branch -M main
+git push -u origin main
+```
+
+Use the SSH remote URL instead if you prefer SSH keys.
+
 ## Disclaimer
 
 This app is for **education and visualization** only. Simulations are **not predictions**; they are LLM-generated scenarios. Always verify real-world information with primary sources.
